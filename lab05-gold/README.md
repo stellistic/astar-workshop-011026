@@ -64,19 +64,27 @@ Three ideas to look out for in the notebook:
 
 3. **Section 4** verifies row counts, **18 relationships with 0 orphaned rows**, and the headline KPIs.
 
-   ![The Gold verify cell: row counts, zero orphans, and KPIs all ✅.](../docs/images/lab05/lab05-03-verify-gold.png)
+   ![The Gold verify cell: 13 row counts and 18 relationships, all with 0 orphaned rows.](../docs/images/lab05/lab05-03a-verify-gold-counts.png)
+
+   ![The Gold verify cell: headline KPIs all ✅ and "Gold star schema complete".](../docs/images/lab05/lab05-03-verify-gold.png)
+
+   Click **Stop session** (■) when you're done.
 
 ### Task B: Query Gold with SQL, no Spark needed
 
 Every Lakehouse comes with a **SQL analytics endpoint**, a read-only T-SQL view of its tables. Analysts can
 query Gold without starting a Spark session.
 
-4. Open **`lh_kcorp_plant`** from the workspace. At the top right, switch the **Lakehouse** drop-down to
-   **SQL analytics endpoint**.
+4. Back in your workspace, `lh_kcorp_plant` now has a second row nested under it: its **SQL analytics
+   endpoint**, created automatically with the Lakehouse. Click that row.
 
-   ![Switching the Lakehouse view to the SQL analytics endpoint.](../docs/images/lab05/lab05-04-switch-sql-endpoint.png)
+   ![The workspace list with the lh_kcorp_plant SQL analytics endpoint row highlighted.](../docs/images/lab05/lab05-04-open-sql-endpoint.png)
 
-5. Click **New SQL query**, paste the query below and click **Run**:
+   > **Tip:** in the Lakehouse Explorer you can see all three medallion schemas side by side:
+   >
+   > ![The lh_kcorp_plant Explorer showing the bronze, gold and silver schemas.](../docs/images/lab05/lab05-04a-lakehouse-three-schemas.png)
+
+5. Click **New SQL query**, paste the query below and click **Run** (or press Ctrl+Enter):
 
    ```sql
    SELECT p.PlantCode,
@@ -88,7 +96,8 @@ query Gold without starting a Spark session.
    ORDER BY scrap_rate DESC;
    ```
 
-   **MY-01** should come out with the highest scrap rate, at about **3.8%**.
+   **MY-01** should come out with the highest scrap rate, at about **3.8%**. The query ran in a few seconds on the
+   SQL engine, with no Spark session needed.
 
    ![A T-SQL query over gold.fact_production_run showing scrap rate by plant.](../docs/images/lab05/lab05-05-sql-query-scrap-by-plant.png)
 

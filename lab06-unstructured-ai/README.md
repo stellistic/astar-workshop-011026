@@ -43,31 +43,40 @@ flowchart LR
 
 ### Task A: Look at a few bills
 
-1. In `lh_kcorp_plant` → **Files** → `landing` → `utility_bills`, click **`IN-01-ELEC-202601.pdf`**, then
-   **`SG-01-ELEC-202603.pdf`**. The first is a digital bill; the second is a heavily degraded scan. Keep both in
-   mind.
+1. In `lh_kcorp_plant` → **Files** → `landing` → `utility_bills`, click **`IN-01-ELEC-202601.pdf`**. Fabric
+   previews PDFs right in the browser. This is a *digital* bill from the Indian provider.
 
-   ![A digital Indian electricity bill and a scanned Singapore bill side by side.](../docs/images/lab06/lab06-01-bill-examples.png)
+   ![The digital IN-01 electricity bill previewed in the Lakehouse.](../docs/images/lab06/lab06-01a-digital-bill-preview.png)
+
+2. Now click **`SG-01-ELEC-202603.pdf`**. This one is a **scan**: grey, skewed and speckled, with no text inside.
+   Keep both in mind.
+
+   ![The scanned SG-01 electricity bill previewed in the Lakehouse.](../docs/images/lab06/lab06-01b-scanned-bill-preview.png)
 
 ### Task B: Import, attach and run step by step
 
-2. **Import** `lab06-unstructured-ai/notebooks/06_utility_bills_ai.ipynb` and **attach `lh_kcorp_plant`**, as in
+3. **Import** `lab06-unstructured-ai/notebooks/06_utility_bills_ai.ipynb` and **attach `lh_kcorp_plant`**, as in
    Lab 2.
-3. This time, **run the cells one at a time** (click ▷ on each cell, or press **Shift+Enter**) so you can read
+4. This time, **run the cells one at a time** (click ▷ on each cell, or press **Shift+Enter**) so you can read
    each result.
 
-   - **Step 0** installs two small packages. `%pip` restarts Python, which is why it comes first.
+   - **Step 0** installs two small packages. `%pip` restarts Python (the output says *"PySpark kernel has been
+     restarted"*), which is why it comes first. Then run the setup cell: it should print **found 48 bills**.
    - **Step 1** reads each PDF's text layer the ordinary way. **35 bills have text and 13 don't**: the
      scanned bill comes back as an empty string.
 
-     ![Step 1: 35 bills with a text layer, 13 without; the scanned bill returns ''.](../docs/images/lab06/lab06-02-text-layer-check.png)
+     ![Step 1: 35 bills with a text layer, 13 without.](../docs/images/lab06/lab06-02-text-layer-check.png)
+
+     ![Step 1: the digital bill's text comes out as one long string; the scanned bill returns ''.](../docs/images/lab06/lab06-02b-scanned-returns-empty.png)
 
    - **Step 2** defines 19 fields in plain English, each an `ExtractLabel` with a type. Then it tries them on
-     **one scanned bill**. Every field comes back, from a picture.
+     **one scanned bill** (it takes 10–20 seconds). Every field comes back, from a picture: compare the values
+     with the scan you opened in step 2, for example *Total Amount Due* **64,228.54**.
 
      ![Step 2: ai.extract on a single scanned bill returns all 19 fields.](../docs/images/lab06/lab06-03-extract-one-scan.png)
 
-   - **Step 3** extracts **all 48 bills** into `bronze.utility_bill_extract`. It took about 30 seconds in the golden run.
+   - **Step 3** extracts **all 48 bills** into `bronze.utility_bill_extract`. The progress bar reads *48/48*; it took
+     **25 seconds** in the golden run.
 
      ![Step 3: bronze.utility_bill_extract with one row per bill.](../docs/images/lab06/lab06-04-bronze-extract.png)
 
@@ -77,27 +86,31 @@ flowchart LR
 
 ### Task C: Silver: confidence is not correctness
 
-4. **Step 4** types the values and runs three **self-consistency checks** on every bill: the meter readings must
+5. **Step 4** types the values and runs three **self-consistency checks** on every bill: the meter readings must
    add up to the consumption, the subtotal plus tax must equal the total, and the plant code must be real. A bill
    that fails any check is flagged **`Review`**.
 
    ![Step 4: silver.utility_bill grouped by DqStatus.](../docs/images/lab06/lab06-05-silver-checks.png)
 
-5. **Step 5** scores the AI against the **ground truth**, field by field.
+6. **Step 5** scores the AI against the **ground truth**, field by field.
 
    ![Step 5: per-field accuracy against the ground truth.](../docs/images/lab06/lab06-06-accuracy-scores.png)
 
+   In the golden run on 29 September **all 48 bills passed** and field accuracy was **100%**, scans included.
+   An earlier dry run of the same notebook got **98%**: a dropped digit in one Malaysian invoice number, and an
+   en-dash `–` read instead of a hyphen `-` in one Indian one. **An LLM is not deterministic**, so your numbers
+   may differ slightly from your neighbour's, and that's the point of this step.
+
    **Discuss with your neighbour:**
-   - Which fields were missed, and were they on scanned or digital bills?
-   - In the golden run, a few *identifier* fields differed from the truth: a dropped digit in an invoice number,
-     an en-dash `–` read instead of a hyphen `-`. **The meter and money checks can't catch those**, because
-     they aren't used in any arithmetic. What would you check for an invoice number?
+   - Did you get any misses? Were they on scanned or digital bills?
+   - The meter and money checks **can't catch** a wrong invoice number, because it isn't used in any arithmetic.
+     What rule would you add? (Hint: every provider uses a fixed pattern.)
 
 ### Task D: Gold, and the payoff
 
-6. **Step 6** writes **`gold.fact_utility_bill`**, joined to the *same* `dim_plant` and `dim_date` as your
+7. **Step 6** writes **`gold.fact_utility_bill`**, joined to the *same* `dim_plant` and `dim_date` as your
    production data, with amounts converted to USD.
-7. **Step 7** answers a question neither source can answer alone: **how many kWh does each plant use per unit
+8. **Step 7** answers a question neither source can answer alone: **how many kWh does each plant use per unit
    produced?** Electricity comes from the PDFs; units come from the MES.
 
    ![Step 7: kWh per unit produced, by plant.](../docs/images/lab06/lab06-07-energy-per-unit.png)
@@ -105,7 +118,10 @@ flowchart LR
    > **SG-01** uses the most energy per unit, at about **22 kWh**, against about **12 kWh** at IN-01.
    > That's a question for the plant manager, and you answered it from a stack of PDFs.
 
-8. **Step 8** verifies: 48 rows in each layer, and every bill matched to a plant and a date.
+9. **Step 8** verifies: 48 rows in each layer, and every bill matched to a plant and a date. Then click
+   **Stop session**.
+
+   ![Step 8: all three layers have 48 rows and no bill is missing a plant or date key.](../docs/images/lab06/lab06-08-verify.png)
 
 ---
 

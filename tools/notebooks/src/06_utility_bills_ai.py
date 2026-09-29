@@ -127,7 +127,8 @@ print(f"{len(BILL_FIELDS)} fields defined")
 
 # %%
 one = pd.DataFrame({"file_path": [f"{BILLS}/SG-01-ELEC-202603.pdf"]})
-display(one["file_path"].ai.extract(*BILL_FIELDS, column_type="path").T)
+result = one["file_path"].ai.extract(*BILL_FIELDS, column_type="path")
+display(result.T.reset_index().set_axis(["field", "value"], axis=1))
 
 # %% [markdown]
 # ## 3 · Bronze: extract all 48 bills
