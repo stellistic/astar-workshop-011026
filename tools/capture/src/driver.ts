@@ -144,7 +144,7 @@ class Driver {
         await mkdir(dirname(path), { recursive: true });
         try {
           if (cmd.element !== undefined) await resolveTarget(page, cmd.element).first().screenshot({ path });
-          else await page.screenshot({ path, fullPage: cmd.fullPage ?? false });
+          else await page.screenshot({ path, fullPage: cmd.fullPage ?? false, ...(cmd.clip !== undefined ? { clip: cmd.clip } : {}) });
         } finally {
           await clearHighlights(page);
         }

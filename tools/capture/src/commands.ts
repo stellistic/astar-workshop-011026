@@ -41,6 +41,7 @@ export const commandSchema = z.discriminatedUnion("op", [
     element: t.optional(),
     fullPage: z.boolean().optional(),
     pad: z.number().nonnegative().optional(),
+    clip: z.object({ x: z.number(), y: z.number(), width: z.number().positive(), height: z.number().positive() }).optional(),
   }),
   z.object({ op: z.literal("aria"), target: t.optional(), grep: z.string().optional(), max: z.number().int().positive().optional() }),
   z.object({ op: z.literal("count"), target: t }),

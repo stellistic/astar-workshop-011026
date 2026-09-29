@@ -51,7 +51,7 @@ REFERENCE = "Files/landing/reference"
 for schema in ("bronze", "silver", "gold"):
     spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
 
-bill_files = sorted(glob.glob(f"{BILLS}/*/*.pdf"))
+bill_files = sorted(glob.glob(f"{BILLS}/*.pdf"))
 print(f"Spark {pyspark.__version__} · found {len(bill_files)} bills")
 assert len(bill_files) == 48, "Expected 48 PDFs under Files/landing/utility_bills/ (see Lab 1)."
 
@@ -71,11 +71,11 @@ inventory = pd.DataFrame(
 inventory["has_text_layer"] = inventory["text_chars"] > 50
 display(inventory.groupby("has_text_layer").size().rename("bills").reset_index())
 
-sample = PdfReader(f"{BILLS}/202601/IN-01-ELEC-202601.pdf").pages[0].extract_text()
+sample = PdfReader(f"{BILLS}/IN-01-ELEC-202601.pdf").pages[0].extract_text()
 print("---- a digital bill: text comes out, but as one long string ----")
 print(sample[:700])
 print("\n---- a scanned bill ----")
-print(repr(PdfReader(f"{BILLS}/202603/SG-01-ELEC-202603.pdf").pages[0].extract_text()))
+print(repr(PdfReader(f"{BILLS}/SG-01-ELEC-202603.pdf").pages[0].extract_text()))
 
 # %% [markdown]
 # **What you should see:** 35 bills have text and 13 don't. Even for the 35, you'd still have to write rules to find
@@ -126,7 +126,7 @@ print(f"{len(BILL_FIELDS)} fields defined")
 # 10–30 seconds.
 
 # %%
-one = pd.DataFrame({"file_path": [f"{BILLS}/202603/SG-01-ELEC-202603.pdf"]})
+one = pd.DataFrame({"file_path": [f"{BILLS}/SG-01-ELEC-202603.pdf"]})
 display(one["file_path"].ai.extract(*BILL_FIELDS, column_type="path").T)
 
 # %% [markdown]
@@ -316,7 +316,7 @@ per_unit = (
     spark.table("gold.agg_plant_month").join(energy, ["PlantKey", "YearMonth"])
     .groupBy("PlantCode")
     .agg(F.sum("ElectricityKwh").alias("ElectricityKwh"), F.sum("ActualUnits").alias("UnitsProduced"))
-    .withColumn("KwhPerUnit", F.round(F.col("ElectricityKwh") / F.col("UnitsProduced"), 2))
+    .withColumn("KwhPerUnit", F.expr("round(try_divide(ElectricityKwh, UnitsProduced), 2)"))
     .orderBy(F.desc("KwhPerUnit"))
 )
 display(per_unit)

@@ -285,7 +285,8 @@ def curate_bills(source_dir: Path, out_dir: Path, bills_src: Path | None) -> dic
     write_table(out_dir / "data" / "landing" / "reference" / "utility_bills_ground_truth.csv", truth)
     if bills_src is not None:
         for m in manifest:
-            dest = out_dir / "data" / "landing" / "utility_bills" / m["relative_path"]
+            # flat folder: the Lakehouse upload pane accepts files, not folders
+            dest = out_dir / "data" / "landing" / "utility_bills" / m["file_name"]
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(bills_src / m["relative_path"], dest)
     scanned = sum(1 for m in manifest if m["render_mode"] == "scanned")
