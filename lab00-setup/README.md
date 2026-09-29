@@ -19,6 +19,8 @@ flowchart LR
 > **Already have a workspace?** If your facilitator created one for you, open it (left nav → **Workspaces**),
 > check it's on a capacity (step 5), then skip to Task 2.
 
+> ▶ **Watch it:** [creating the workspace](../docs/media/lab00-create-workspace.mp4) (short screen recordings from the golden run)
+
 ---
 
 ### Task 1: Create your workspace

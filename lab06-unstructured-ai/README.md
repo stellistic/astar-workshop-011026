@@ -23,7 +23,7 @@ providers:
 ```mermaid
 flowchart LR
   PDF["Files/landing/utility_bills<br/>48 PDF"] -->|"ai.extract<br/>(19 fields)"| BR["bronze.utility_bill_extract<br/>raw answers, all strings"]
-  BR -->|"type · conform units<br/>meter / money / identity checks"| SV["silver.utility_bill<br/>DqStatus = Passed / Review"]
+  BR -->|"type · conform units<br/>meter / money / identity / period checks"| SV["silver.utility_bill<br/>DqStatus = Passed / Review"]
   SV -->|"join dim_plant, dim_date<br/>convert to USD"| GD["gold.fact_utility_bill"]
   GT["reference/ground truth"] -. score .-> SV
   GD --> KPI["Energy per unit produced<br/>= PDF kWh ÷ MES units"]
@@ -38,6 +38,8 @@ flowchart LR
 - [`notebooks/06_utility_bills_ai.ipynb`](notebooks/06_utility_bills_ai.ipynb)
 - `data/landing/reference/utility_bills_ground_truth.csv`: the correct answer for every bill (for scoring)
 - `data/landing/reference/utility_bills_extracted_catchup.csv`: a golden-run extraction, if AI Functions aren't available
+
+> ▶ **Watch it:** [extracting all 48 bills with ai.extract](../docs/media/lab06-extract-48-bills.mp4) (short screen recordings from the golden run)
 
 ---
 
@@ -86,9 +88,9 @@ flowchart LR
 
 ### Task C: Silver: confidence is not correctness
 
-5. **Step 4** types the values and runs three **self-consistency checks** on every bill: the meter readings must
-   add up to the consumption, the subtotal plus tax must equal the total, and the plant code must be real. A bill
-   that fails any check is flagged **`Review`**.
+5. **Step 4** types the values and runs four **self-consistency checks** on every bill: the meter readings must
+   add up to the consumption, the subtotal plus tax must equal the total, the plant code must be real, and the
+   billing month must match the month in the file name. A bill that fails any check is flagged **`Review`**.
 
    ![Step 4: silver.utility_bill grouped by DqStatus.](../docs/images/lab06/lab06-05-silver-checks.png)
 
@@ -96,10 +98,10 @@ flowchart LR
 
    ![Step 5: per-field accuracy against the ground truth.](../docs/images/lab06/lab06-06-accuracy-scores.png)
 
-   In the golden run on 29 September **all 48 bills passed** and field accuracy was **100%**, scans included.
-   An earlier dry run of the same notebook got **98%**: a dropped digit in one Malaysian invoice number, and an
-   en-dash `–` read instead of a hyphen `-` in one Indian one. **An LLM is not deterministic**, so your numbers
-   may differ slightly from your neighbour's, and that's the point of this step.
+   **Your numbers will differ slightly from your neighbour's: an LLM is not deterministic.** In the golden run
+   field accuracy was **99.6%**. Every amount, reading and date was right, but two invoice numbers and one meter number
+   were not (earlier dry runs saw a dropped digit, and an en-dash `–` read instead of a hyphen `-`). Yet in Step 4
+   **all 48 bills passed**, because the four checks only test arithmetic and dates.
 
    **Discuss with your neighbour:**
    - Did you get any misses? Were they on scanned or digital bills?
@@ -118,7 +120,7 @@ flowchart LR
    > **SG-01** uses the most energy per unit, at about **22 kWh**, against about **12 kWh** at IN-01.
    > That's a question for the plant manager, and you answered it from a stack of PDFs.
 
-9. **Step 8** verifies: 48 rows in each layer, and every bill matched to a plant and a date. Then click
+9. **Step 8** verifies: 48 rows in each layer, and every bill matches a row in `dim_plant` and in `dim_date`. Then click
    **Stop session**.
 
    ![Step 8: all three layers have 48 rows and no bill is missing a plant or date key.](../docs/images/lab06/lab06-08-verify.png)

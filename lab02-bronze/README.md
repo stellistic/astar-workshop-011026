@@ -23,6 +23,8 @@ flowchart LR
 ### Files
 - [`notebooks/02_bronze_ingest.ipynb`](notebooks/02_bronze_ingest.ipynb)
 
+> ▶ **Watch it:** [attaching the Lakehouse and running the notebook](../docs/media/lab02-attach-and-run.mp4) (short screen recordings from the golden run)
+
 ---
 
 ### Task A: Import the notebook
@@ -76,8 +78,9 @@ A notebook needs to know which Lakehouse to read from and write to. That's its *
 
 8. Scroll through the output while it runs:
    - **Section 1** loads `FactProductionRun.csv` step by step. Note `printSchema()`: every column is `string`.
-   - The **`%%sql`** cell counts runs by `OperatorTeam`. You'll see `Team-A`, `Team-B` and `Team-C` *plus* about 15
-     messy spellings. That's what Silver will fix.
+   - The **`%%sql`** cell counts runs by `OperatorTeam`. There should be **3** teams, but you'll see **18** rows:
+     `Team-A` also appears as ` Team-A`, `TEAM-A `, `Team A`, `team-a` and `team_A`, and the same for B and C. That's
+     what Silver will fix.
 
    ![The %%sql cell result: OperatorTeam counts including messy spellings.](../docs/images/lab02/lab02-08-sql-operator-team.png)
 

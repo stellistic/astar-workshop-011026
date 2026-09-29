@@ -37,6 +37,8 @@ These are the problems planted in the data, and what Silver does about each:
 ### Files
 - [`notebooks/03_silver_transform.ipynb`](notebooks/03_silver_transform.ipynb)
 
+> ▶ **Watch it:** [Data Wrangler on runs_bronze](../docs/media/lab03-data-wrangler.mp4) (short screen recordings from the golden run)
+
 ---
 
 ### Task A: Import, attach and run

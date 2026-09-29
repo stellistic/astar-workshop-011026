@@ -79,12 +79,28 @@ With a participant-like account (not a Fabric admin):
 
 1. Create a workspace on the capacity (Lab 0).
 2. Create `lh_kcorp_plant` and upload **one** CSV and **one** PDF (Lab 1).
-3. Import `06_utility_bills_ai.ipynb`, attach the Lakehouse, and run **only** the first three code cells plus the
-   *"Try it on one scanned bill"* cell. If fields come back, AI Functions work. ✅
+3. Create a new notebook, attach the Lakehouse, and run this cell (it reads the one PDF you uploaded):
+
+   ```python
+   import glob, pandas as pd
+   import synapse.ml.aifunc as aifunc
+
+   pdf = glob.glob("/lakehouse/default/Files/landing/utility_bills/*.pdf")[0]
+   label = aifunc.ExtractLabel("total_amount_due", description="Final total payable", type="number", max_items=1)
+   display(pd.DataFrame({"file_path": [pdf]})["file_path"].ai.extract(label, column_type="path"))
+   ```
+
+   A number comes back → AI Functions work. ✅ An authorisation or "not enabled" error → revisit section 1.
 4. Create a Dataflow Gen2 and confirm the **Lakehouse** destination lists your `silver` schema (Lab 4).
 5. Delete the test workspace.
 
-## 6 · On the day
+## 6 · Make sure the capacity stays on
+
+If the capacity is **paused** by an automation (a common cost-saving setup), every notebook, query and report fails
+at once. The golden run's own F2 is suspended nightly by a runbook. Disable any schedule that pauses the workshop
+capacity on the day, and check it's **Active** at 13:30.
+
+## 7 · On the day
 
 - Put the **capacity name** and the **GitHub kit URL** on the first slide.
 - Open the [Capacity Metrics app](https://learn.microsoft.com/fabric/enterprise/metrics-app) and watch CU% during

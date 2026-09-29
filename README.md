@@ -68,7 +68,7 @@ Each lab ends with a **✅ checkpoint**, and each notebook ends with a **verify*
 the known-correct row counts. The data is fixed, so everyone should see the same numbers (see
 [expected results](docs/facilitator/expected-results.md)).
 
-**Fell behind?** Every lab has a catch-up path, so you can always start the next lab:
+**Fell behind?** The three labs most likely to overrun have a catch-up path, so you can still start the next lab:
 - Lab 4 → [`04_silver_dims_catchup`](lab04-silver-dataflow/notebooks/04_silver_dims_catchup.ipynb) builds the three dimensions in code.
 - Lab 6 → set `USE_CATCHUP = True` to load pre-extracted bill data.
 - Lab 7 → [`07_semantic_model_catchup`](lab07-semantic-model/notebooks/07_semantic_model_catchup.ipynb) adds any missing relationships and measures.
@@ -100,6 +100,7 @@ Click the green **`< > Code`** button on this page → **Download ZIP**, then un
 | `data/landing/reference/` | Ground truth for scoring the AI, plus a catch-up extraction |
 | `labNN-*/` | One folder per lab: a `README.md` guide and its notebook(s) |
 | `docs/facilitator/` | Pre-flight checklist, run of show, expected results, troubleshooting |
+| `docs/media/` | [Short screen recordings](docs/media/README.md) of key steps from the golden run |
 
 ### Names used throughout
 

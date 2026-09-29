@@ -178,6 +178,7 @@ display(spark.table("bronze.utility_bill_extract").orderBy("document_id"))
 # | **Meter check** | `current − previous = consumption` | a misread or dropped digit in any of the three |
 # | **Money check** | `subtotal + tax = total` | a misread amount |
 # | **Identity check** | the plant code is one of the four known plants | a garbled site reference |
+# | **Period check** | the billing month matches the month in the file name | a misread date that would file the bill under the wrong month |
 #
 # Bills that pass every check are `Passed`; the rest are flagged `Review` for a human to look at. Units are
 # conformed too. Water arrives as `m3`, `Cu M`, `kL` or `KL`, all the same thing (1 kL = 1 m³). The Malaysian bills
@@ -220,10 +221,11 @@ silver_bills = (
     .withColumn("MeterCheck", F.abs(F.col("CurrentReading") - F.col("PreviousReading") - F.col("Consumption")) <= 1)
     .withColumn("MoneyCheck", F.abs(F.col("SubtotalAmount") + F.col("TaxAmount") - F.col("TotalAmount")) <= 0.05)
     .withColumn("IdentityCheck", F.col("PlantCode").isin(known_plants) & (F.col("PlantCode") == F.regexp_extract("DocumentId", PLANT_IN_NAME, 1)))
+    .withColumn("PeriodCheck", F.date_format("BillingPeriodStart", "yyyyMM") == F.regexp_extract("DocumentId", r"(\d{6})$", 1))
     .withColumn(
         "DqStatus",
         F.when(F.coalesce(F.col("MeterCheck"), F.lit(False)) & F.coalesce(F.col("MoneyCheck"), F.lit(False))
-               & F.col("IdentityCheck"), "Passed").otherwise("Review"),
+               & F.col("IdentityCheck") & F.coalesce(F.col("PeriodCheck"), F.lit(False)), "Passed").otherwise("Review"),
     )
 )
 silver_bills.write.mode("overwrite").option("overwriteSchema", True).saveAsTable("silver.utility_bill")
@@ -244,6 +246,7 @@ paired = mine.merge(truth, left_on="DocumentId", right_on="document_id", how="in
 
 FIELD_MAP = {  # silver column -> ground-truth column
     "PlantCode": "plant_code", "UtilityType": "utility_type", "AccountNumber": "account_no",
+    "BillingPeriodStart": "period_start", "BillingPeriodEnd": "period_end",
     "InvoiceNumber": "invoice_no", "MeterNumber": "meter_no", "PreviousReading": "previous_reading",
     "CurrentReading": "current_reading", "Consumption": "consumption", "PeakDemandKw": "demand_kw",
     "CurrencyCode": "currency", "SubtotalAmount": "subtotal_amount", "TaxAmount": "tax_amount",
@@ -334,7 +337,9 @@ checks = {
 for table, expected in checks.items():
     actual = spark.table(table).count()
     print(f"{'✅' if actual == expected else '❌'} {table:30s} {actual} (expected {expected})")
-unresolved = spark.table("gold.fact_utility_bill").filter("PlantKey IS NULL OR DateKey IS NULL").count()
-print(f"{'✅' if unresolved == 0 else '❌'} bills without a plant or date key: {unresolved}")
+bills = spark.table("gold.fact_utility_bill")
+unresolved = (bills.filter("PlantKey IS NULL").count()
+              + bills.join(spark.table("gold.dim_date").select("DateKey"), "DateKey", "left_anti").count())
+print(f"{'✅' if unresolved == 0 else '❌'} bills that don't match dim_plant and dim_date: {unresolved}")
 assert unresolved == 0 and all(spark.table(t).count() == n for t, n in checks.items())
 print("\n🎉 Unstructured data is now part of your star schema. Next: Lab 7, the semantic model.")

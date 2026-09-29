@@ -34,6 +34,8 @@ The problems you'll fix (you saw some of them in the Lab 1 preview):
 - [`assets/dim_customer.pq`](assets/dim_customer.pq) · [`assets/dim_plant.pq`](assets/dim_plant.pq) · [`assets/dim_product.pq`](assets/dim_product.pq): the finished Power Query (M) scripts, to paste in when short of time
 - [`notebooks/04_silver_dims_catchup.ipynb`](notebooks/04_silver_dims_catchup.ipynb): **catch-up** that builds the same three tables in code
 
+> ▶ **Watch it:** [cleaning dim_product in Power Query](../docs/media/lab04-power-query-product.mp4) · [setting the silver destination](../docs/media/lab04-silver-destination.mp4) (short screen recordings from the golden run)
+
 ---
 
 ### Task A: Create the Dataflow and connect to Bronze

@@ -30,6 +30,8 @@ flowchart LR
 | `utility_bills/` | 48 PDF | Monthly electricity and water bills for 4 plants, Jan–Jun 2026. 13 are scans. |
 | `reference/` | 2 CSV | Ground truth for the bills, and a catch-up extraction (both used in Lab 6) |
 
+> ▶ **Watch it:** [creating the Lakehouse and folders](../docs/media/lab01-create-lakehouse.mp4) · [uploading the files](../docs/media/lab01-upload-files.mp4) (short screen recordings from the golden run)
+
 ---
 
 ### Task A: Create the Lakehouse

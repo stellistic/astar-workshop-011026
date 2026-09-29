@@ -283,6 +283,11 @@ def curate_bills(source_dir: Path, out_dir: Path, bills_src: Path | None) -> dic
     truth = read_table(source_dir / "utility_bills" / "ground_truth_bill.csv")
     truth.rows = [r for r in truth.rows if r["billing_period"] in BILL_PERIODS]
     write_table(out_dir / "data" / "landing" / "reference" / "utility_bills_ground_truth.csv", truth)
+    # golden-run ai.extract output, loaded by Lab 6 when AI Functions are unavailable
+    shutil.copyfile(
+        source_dir / "utility_bills" / "utility_bills_extracted_catchup.csv",
+        out_dir / "data" / "landing" / "reference" / "utility_bills_extracted_catchup.csv",
+    )
     if bills_src is not None:
         for m in manifest:
             # flat folder: the Lakehouse upload pane accepts files, not folders
@@ -371,6 +376,9 @@ def main() -> None:
         counts_path=root / "tools" / "expected_counts.json",
     )
     print(json.dumps({"bronze": counts["bronze"], "silver": counts["silver"], "kpis": counts["kpis"]}, indent=2))
+    pdfs = len(list((root / "data" / "landing" / "utility_bills").glob("*.pdf")))
+    if pdfs != counts["utility_bills"]["documents"]:
+        print(f"WARNING: data/landing/utility_bills holds {pdfs} PDFs; rerun with --bills-src to copy all of them.")
 
 
 if __name__ == "__main__":

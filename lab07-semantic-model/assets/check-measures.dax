@@ -1,0 +1,27 @@
+// Lab 7 · check your model. Paste into DAX query view and click Run.
+// Every row should show ✅. The two "by plant" rows also prove the relationships work.
+EVALUATE
+VAR Checks = {
+    ( 1, "Actual Units", [Actual Units], 1032704, "#,0" ),
+    ( 2, "Scrap Rate %", [Scrap Rate %], 0.0313, "0.00%" ),
+    ( 3, "Production Attainment %", [Production Attainment %], 0.9426, "0.00%" ),
+    ( 4, "Defect Rate %", [Defect Rate %], 0.0241, "0.00%" ),
+    ( 5, "Orders", [Orders], 4560, "#,0" ),
+    ( 6, "Late Order %", [Late Order %], 0.054, "0.0%" ),
+    ( 7, "Total Revenue", [Total Revenue], 1106432678, "#,0" ),
+    ( 8, "Preventive Maintenance %", [Preventive Maintenance %], 0.67, "0.0%" ),
+    ( 9, "Electricity kWh", [Electricity kWh], 3355595, "#,0" ),
+    ( 10, "Energy per Unit kWh", [Energy per Unit kWh], 16.65, "0.00" ),
+    ( 11, "Scrap Rate % · MY-01", CALCULATE ( [Scrap Rate %], dim_plant[PlantCode] = "MY-01" ), 0.0379, "0.00%" ),
+    ( 12, "Energy per Unit kWh · SG-01", CALCULATE ( [Energy per Unit kWh], dim_plant[PlantCode] = "SG-01" ), 22.05, "0.00" )
+}
+RETURN
+    SELECTCOLUMNS (
+        Checks,
+        "#", [Value1],
+        "Check", [Value2],
+        "Your model", FORMAT ( [Value3], [Value5] ),
+        "Expected", FORMAT ( [Value4], [Value5] ),
+        "OK", IF ( FORMAT ( [Value3], [Value5] ) = FORMAT ( [Value4], [Value5] ), "✅", "❌" )
+    )
+ORDER BY [#]

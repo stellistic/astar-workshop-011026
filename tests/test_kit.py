@@ -170,3 +170,42 @@ def test_ground_truth_covers_the_curated_bills(kit: Path, expected: dict) -> Non
     assert {r["billing_period"] for r in gt} == {f"2026{m:02d}" for m in range(1, 7)}
     assert {r["plant_code"] for r in gt} == {"SG-01", "MY-01", "IN-01", "AU-01"}
     assert expected["utility_bills"]["scanned"] == 13
+
+
+def test_clean_build_ships_the_lab6_catchup_extraction(kit: Path) -> None:
+    ref = kit / "data" / "landing" / "reference"
+    assert sorted(p.name for p in ref.glob("*.csv")) == [
+        "utility_bills_extracted_catchup.csv",
+        "utility_bills_ground_truth.csv",
+    ]
+    catchup = _rows(ref / "utility_bills_extracted_catchup.csv")
+    assert len(catchup) == 48
+    # Lab 6 Silver reads these columns from Bronze, so the catch-up file must carry every one
+    silver_inputs = {
+        "document_id",
+        "site_reference",
+        "utility_type",
+        "provider_name",
+        "account_number",
+        "invoice_number",
+        "meter_number",
+        "billing_period_start",
+        "billing_period_end",
+        "previous_reading",
+        "current_reading",
+        "consumption",
+        "consumption_unit",
+        "peak_demand_kw",
+        "currency_code",
+        "subtotal_amount",
+        "tax_amount",
+        "total_amount_due",
+        "grid_emission_factor",
+        "estimated_emissions_kg",
+        "_source_file",
+    }
+    assert silver_inputs <= set(catchup[0])
+    assert all(
+        r["_source_file"].startswith("Files/landing/utility_bills/") and "/2026" not in r["_source_file"]
+        for r in catchup
+    )

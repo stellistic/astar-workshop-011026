@@ -2,8 +2,12 @@
 # # Lab 7 · Catch-up: finish the semantic model's relationships and measures in code
 #
 # **Use this only if you are behind, or Copilot didn't do what you asked.** It connects to your semantic model
-# **`sm_kcorp_plant`** and adds any of the lab's **20 relationships** and **17 measures** that are *missing*.
-# Anything you already built is left untouched, so it is safe to run at any point, and more than once.
+# **`sm_kcorp_plant`** and makes its **20 relationships** and **17 measures** match the lab exactly:
+# - adds any relationship or measure that is **missing**,
+# - re-activates a relationship that is **inactive**, and sets it to many-to-one, single direction,
+# - resets a measure whose **DAX differs** from the lab's (for example, one Copilot rewrote).
+#
+# Everything else is left alone, so it is safe to run at any point, and more than once.
 #
 # It uses **Semantic Link Labs** (`sempy_labs`), an open-source library for managing Power BI / Fabric semantic
 # models from a notebook. It edits the same Tabular Object Model (TOM) the web model editor does.
@@ -88,30 +92,52 @@ assert not missing_tables, (
 print(f"✅ {MODEL} has all {len(TABLES)} tables")
 
 # %% [markdown]
-# ## 2 · Add whatever is missing
+# ## 2 · Add what's missing, fix what's wrong
 
 # %%
-added_rel, added_meas = [], []
+import re
+
+import Microsoft.AnalysisServices.Tabular as TOM  # available once Semantic Link has loaded .NET
+
+
+def same_dax(a: str, b: str) -> bool:
+    return re.sub(r"\s+", "", a or "") == re.sub(r"\s+", "", b or "")
+
+
+changes = []
 with connect_semantic_model(dataset=MODEL, readonly=False) as tom:
-    existing_rel = {(r.FromTable.Name, r.FromColumn.Name, r.ToTable.Name, r.ToColumn.Name) for r in tom.model.Relationships}
+    existing = {(r.FromTable.Name, r.FromColumn.Name, r.ToTable.Name, r.ToColumn.Name): r for r in tom.model.Relationships}
     for ft, fc, tt, tc in RELATIONSHIPS:
-        if (ft, fc, tt, tc) in existing_rel:
+        rel = existing.get((ft, fc, tt, tc))
+        if rel is None and (tt, tc, ft, fc) in existing:
+            print(f"⚠️ {ft}[{fc}] ↔ {tt}[{tc}] points the wrong way; delete it in Manage relationships, then re-run")
             continue
-        if (tt, tc, ft, fc) in existing_rel:
-            print(f"⚠️ {ft}[{fc}] ↔ {tt}[{tc}] exists but points the wrong way; delete it in the model view, then re-run")
+        if rel is None:
+            tom.add_relationship(from_table=ft, from_column=fc, to_table=tt, to_column=tc,
+                                 from_cardinality="Many", to_cardinality="One", cross_filtering_behavior="OneDirection")
+            changes.append(f"added relationship {ft}[{fc}] → {tt}[{tc}]")
             continue
-        tom.add_relationship(from_table=ft, from_column=fc, to_table=tt, to_column=tc,
-                             from_cardinality="Many", to_cardinality="One", cross_filtering_behavior="OneDirection")
-        added_rel.append(f"{ft}[{fc}] → {tt}[{tc}]")
+        wrong = (not rel.IsActive or rel.FromCardinality != TOM.RelationshipEndCardinality.Many
+                 or rel.ToCardinality != TOM.RelationshipEndCardinality.One
+                 or rel.CrossFilteringBehavior != TOM.CrossFilteringBehavior.OneDirection)
+        if wrong:
+            rel.IsActive = True
+            rel.FromCardinality = TOM.RelationshipEndCardinality.Many
+            rel.ToCardinality = TOM.RelationshipEndCardinality.One
+            rel.CrossFilteringBehavior = TOM.CrossFilteringBehavior.OneDirection
+            changes.append(f"fixed relationship {ft}[{fc}] → {tt}[{tc}] (now active, *:1, single)")
 
-    existing_meas = {m.Name for m in tom.all_measures()}
+    measures = {m.Name: m for m in tom.all_measures()}
     for table, name, dax, fmt in MEASURES:
-        if name not in existing_meas:
+        m = measures.get(name)
+        if m is None:
             tom.add_measure(table_name=table, measure_name=name, expression=dax, format_string=fmt)
-            added_meas.append(name)
+            changes.append(f"added measure [{name}]")
+        elif not same_dax(m.Expression, dax) or m.FormatString != fmt:
+            m.Expression, m.FormatString = dax, fmt
+            changes.append(f"reset measure [{name}] to the lab's DAX and format")
 
-print(f"added {len(added_rel)} relationships:", *added_rel, sep="\n  ")
-print(f"added {len(added_meas)} measures:", *added_meas, sep="\n  ")
+print(f"{len(changes)} change(s):", *changes, sep="\n  ")
 
 # %% [markdown]
 # ## 3 · Refresh and sanity-check the numbers
@@ -136,8 +162,32 @@ EVALUATE ROW (
 """)
 display(result)
 
-row = result.iloc[0]
-assert int(row.iloc[0]) == 1032704, "Actual Units should be 1,032,704"
-assert round(float(row.iloc[1]), 4) == 0.0313, "Scrap Rate % should be 3.13%"
-assert round(float(row.iloc[2]), 4) == 0.0241, "Defect Rate % should be 2.41%"
+row = result.iloc[0].tolist()
+EXPECTED = [  # (name, expected, tolerance); the last two come from AI-read PDFs, so allow a little drift
+    ("Actual Units", 1032704, 0), ("Scrap Rate %", 0.0313, 0.00005), ("Defect Rate %", 0.0241, 0.00005),
+    ("Total Revenue", 1106432678, 1), ("Late Order %", 0.0537, 0.00005), ("Preventive Maintenance %", 0.6704, 0.00005),
+    ("Electricity kWh", 3355595, 3355595 * 0.02), ("Energy per Unit kWh", 16.65, 0.35),
+]
+problems = []
+for (name, expected, tol), actual in zip(EXPECTED, row, strict=True):
+    ok = actual is not None and abs(float(actual) - expected) <= tol
+    print(f"{'✅' if ok else '❌'} {name:26s} {actual} (expected {expected})")
+    if not ok:
+        problems.append(name)
+
+# Grouping by a dimension exercises the relationships, not just the measures
+by_plant = fabric.evaluate_dax(MODEL, """
+EVALUATE SUMMARIZECOLUMNS ( 'dim_plant'[PlantCode], "Scrap", ROUND ( [Scrap Rate %], 4 ), "kWh per unit", ROUND ( [Energy per Unit kWh], 2 ) )
+ORDER BY 'dim_plant'[PlantCode]
+""")
+display(by_plant)
+scrap = dict(zip(by_plant.iloc[:, 0], by_plant.iloc[:, 1]))
+expected_scrap = {"AU-01": 0.0294, "IN-01": 0.0292, "MY-01": 0.0379, "SG-01": 0.0291}
+if {k: round(float(v), 4) for k, v in scrap.items()} != expected_scrap:
+    problems.append("Scrap Rate % by plant (a relationship to dim_plant is missing or inactive)")
+    print("❌ Scrap Rate % by plant:", scrap, "expected", expected_scrap)
+else:
+    print("✅ Scrap Rate % by plant matches, so the plant relationships work")
+
+assert not problems, f"Still not right: {problems}. Check the ⚠️ messages above, fix in the model view, and re-run."
 print("🎉 Semantic model complete: relationships, measures and numbers all check out.")

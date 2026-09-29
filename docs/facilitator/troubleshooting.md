@@ -70,6 +70,27 @@ Right-click each query → untick **Enable staging** (the lab doesn't need it), 
 
 ## Lab 7 · Semantic model
 
+**"Error Loading Data Model … storage mode is currently being updated".**
+
+![The Error Loading Data Model message that can appear right after creating the model.](../images/troubleshooting/semantic-model-storage-mode-updating.png)
+
+The model opened (in a new tab) before Fabric had finished creating it. Close the message and that tab, wait a
+minute, and open `sm_kcorp_plant` from the workspace list. **Don't** press *Confirm* again; that makes a second model.
+
+**"To use special characters in a measure name, enclose the entire name in brackets".**
+
+![The formula bar error asking for brackets around the measure name.](../images/troubleshooting/measure-name-needs-brackets.png)
+
+In the web model editor a measure name with spaces must be written `[Actual Units] = …`, not `Actual Units = …`.
+
+**Copilot says it will make changes but nothing happens.**
+Scroll down in the Copilot pane: it's waiting for you to click **Allow** on *"Allow Copilot to make changes during
+this chat session?"*.
+
+**A DAX query fails with "Failed to open the MSOLAP connection", or everything errors at once.**
+The capacity is **paused** (or throttled). In the golden run's demo tenant, an automation pauses the capacity each night.
+Check the capacity state in the Azure portal or the Fabric admin portal and resume it.
+
 **`New semantic model` doesn't list my gold tables.**
 The SQL analytics endpoint's metadata lags Spark. On the endpoint's ribbon click **Refresh** (⟳), wait a few
 seconds and try again.
@@ -79,9 +100,11 @@ Switch the model from **Viewing** to **Editing** (top-left of the ribbon). The w
 Viewing mode.
 
 **A measure returns blank, or a total looks too big.**
-A relationship is missing, or points the wrong way (1:* instead of *:1). Open **Manage relationships** and compare
-with the Lab 7 table, or run [`07_semantic_model_catchup`](../../lab07-semantic-model/notebooks/07_semantic_model_catchup.ipynb),
-which adds only what's missing and flags reversed relationships.
+A relationship is missing, inactive, or points the wrong way (1:* instead of *:1). Open **Manage relationships** and
+compare with the list in [Prompt 1](../../lab07-semantic-model/assets/copilot-prompts.md#prompt-1--the-remaining-19-relationships)
+(plus `fact_production_run[PlantKey] → dim_plant[PlantKey]`), or run [`07_semantic_model_catchup`](../../lab07-semantic-model/notebooks/07_semantic_model_catchup.ipynb),
+which adds what's missing, re-activates inactive relationships, resets any measure whose DAX differs from the lab's,
+and flags reversed relationships.
 
 **"Creating a semantic model requires a Power BI Pro licence".**
 See the [pre-flight licence note](preflight-checklist.md#4--participant-accounts-and-workspaces). The participant
