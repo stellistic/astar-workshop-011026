@@ -1,0 +1,5 @@
+PlantKey,PlantCode,PlantName,Country,Region,PlantType,PlantManager
+1,sg-01,SG-01 Singapore Advanced Manufacturing Plant,Singapore,Southeast Asia,Advanced Manufacturing,Rajesh Kumar
+2,MY-01,MY-01 Malaysia Production Facility,Malaysia,Southeast Asia,Production,Siti Nurhaliza
+3, IN-01 ,IN-01 India Tech Assembly Center,India,South Asia,Assembly,Arjun Patel
+4,AU-01,AU-01 Australia Operations Hub,Australia,Oceania,Operations,Emma Wilson

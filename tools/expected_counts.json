@@ -1,0 +1,110 @@
+{
+  "kit_version": "1.0.0",
+  "seed": 20261001,
+  "bronze": {
+    "DimAsset": 40,
+    "DimCustomer": 36,
+    "DimDate": 912,
+    "DimDefectType": 12,
+    "DimLine": 8,
+    "DimPlant": 4,
+    "DimProduct": 21,
+    "DimShift": 3,
+    "FactAnomalyEvent": 4,
+    "FactCustomerOrder": 4560,
+    "FactMaintenanceEvent": 270,
+    "FactProductionRun": 3673,
+    "FactQualityInspection": 2736
+  },
+  "seeded_issues": {
+    "DimCustomer": {
+      "duplicate_keys": 1,
+      "country_variants": 8
+    },
+    "DimPlant": {
+      "messy_plant_code": 2
+    },
+    "DimProduct": {
+      "duplicate_keys": 1,
+      "untrimmed_names": 4,
+      "currency_formatted_price": 5,
+      "lowercase_category": 2
+    },
+    "FactCustomerOrder": {
+      "dmy_required_ship_date": 300,
+      "open_orders": 40,
+      "orphan_customer": 6,
+      "revenue_with_thousands_separator": 50
+    },
+    "FactMaintenanceEvent": {
+      "blank_root_cause": 9,
+      "preventive_flag_variants": 60
+    },
+    "FactProductionRun": {
+      "exact_duplicates": 25,
+      "negative_scrap": 8,
+      "invalid_datekey": 5,
+      "missing_actual_units": 6,
+      "operator_team_variants": 120
+    },
+    "FactQualityInspection": {
+      "defects_exceed_inspected": 7,
+      "missing_defect_type": 12,
+      "severity_variants": 150
+    }
+  },
+  "silver": {
+    "fact_production_run": 3629,
+    "fact_quality_inspection": 2729,
+    "fact_maintenance_event": 270,
+    "fact_customer_order": 4560,
+    "dim_product": 20,
+    "dim_customer": 35,
+    "dim_plant": 4,
+    "dim_date": 912,
+    "dim_shift": 3,
+    "dim_line": 8,
+    "dim_asset": 40,
+    "dim_defect_type": 12,
+    "dq_rejects": 26
+  },
+  "gold": {
+    "dim_date": 912,
+    "dim_plant": 4,
+    "dim_line": 8,
+    "dim_asset": 40,
+    "dim_shift": 3,
+    "dim_product": 20,
+    "dim_customer": 36,
+    "dim_defect_type": 13,
+    "fact_production_run": 3629,
+    "fact_quality_inspection": 2729,
+    "fact_maintenance_event": 270,
+    "fact_customer_order": 4560,
+    "agg_plant_month": 120
+  },
+  "kpis": {
+    "planned_units": 1095550,
+    "actual_units": 1032704,
+    "scrap_units": 33404,
+    "production_attainment_pct": 0.9426,
+    "scrap_rate_pct": 0.0313,
+    "inspected_units": 476972,
+    "defect_count": 11481,
+    "defect_rate_pct": 0.0241,
+    "orders": 4560,
+    "open_orders": 40,
+    "late_orders": 245,
+    "total_revenue": 1106432678.0,
+    "maintenance_events": 270,
+    "preventive_events": 181,
+    "preventive_maintenance_pct": 0.6704,
+    "maintenance_downtime_minutes": 6624,
+    "plant_months": 120
+  },
+  "utility_bills": {
+    "documents": 48,
+    "scanned": 13,
+    "digital": 35
+  }
+}

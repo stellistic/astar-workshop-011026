@@ -1,0 +1,5 @@
+AnomalyEventID,EventTimestamp,DateKey,PlantKey,LineKey,ProductKey,AssetKey,MetricName,CurrentValue,ThresholdValue,Severity,AnomalyType,BusinessImpact,RecommendedAction,NotificationRecipient,NotificationChannel
+1,2026-06-30,20260630,1,1,,,Scrap Rate %,2.9414555460669893,5.0,High,Quality_Degradation,Increased rework cost and customer shipment delay risk on high-revenue kPhone products,Review quality inspections and maintenance events for Line L3; prioritize motor bearing wear investigation,operations-team@kcorp.com,Teams
+2,2026-06-30,20260630,4,8,,,Downtime Minutes,150.0,120.0,Medium,Operational_Alert,Reduced production capacity,Review maintenance schedule,operations-team@kcorp.com,Teams
+3,2026-06-30,20260630,1,7,,,Defect Rate %,3.5,3.0,Medium,Operational_Alert,Quality compliance risk,Investigate defect causes,operations-team@kcorp.com,Teams
+4,2026-06-30,20260630,4,2,,,Late Shipment Count,8.0,5.0,Low,Operational_Alert,Customer satisfaction impact,Monitor delivery performance,operations-team@kcorp.com,Teams
