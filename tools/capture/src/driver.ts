@@ -77,7 +77,7 @@ class Driver {
           const box = await loc.boundingBox();
           if (box !== null) await showCursor(page, box.x + (cmd.position?.x ?? box.width / 2), box.y + (cmd.position?.y ?? box.height / 2));
         }
-        const opts = { button: cmd.button, force: cmd.force, timeout: cmd.timeout ?? 20000, position: cmd.position };
+        const opts = { button: cmd.button, force: cmd.force, timeout: cmd.timeout ?? 20000, position: cmd.position, modifiers: cmd.modifiers };
         if (cmd.double === true) await loc.dblclick(opts);
         else await loc.click(opts);
         return { clicked: true };

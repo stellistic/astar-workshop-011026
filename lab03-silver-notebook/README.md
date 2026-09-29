@@ -50,8 +50,8 @@ These are the problems planted in the data, and what Silver does about each:
    ![The Silver notebook running, with the rules table visible at the top.](../docs/images/lab03/lab03-01-silver-notebook-run.png)
 
    > 💡 **A notebook's Spark session stays open** for about 20 minutes after the last cell runs, and it holds a
-   > slice of the shared capacity. When you've finished with a notebook, click **Stop session** (■ on the toolbar)
-   > so your neighbours' sessions can start.
+   > slice of the shared capacity. When you've finished with a notebook, click **Stop session** (the red ■ next to
+   > *Standard session* on the toolbar) so your neighbours' sessions can start.
 
 ### Task B: Read what each step did
 
@@ -76,26 +76,36 @@ These are the problems planted in the data, and what Silver does about each:
 ### Task C (optional): Try Data Wrangler
 
 **Data Wrangler** is Fabric's no-code cleaning tool for notebooks. You click operations, it shows a before/after
-preview, and it **writes the pandas or PySpark code for you**.
+preview, and it **writes the PySpark code for you**. Try it on the raw production runs, which the notebook has
+already loaded into a DataFrame called `runs_bronze`.
 
-7. Add a new code cell at the end (hover below the last cell → **+ Code**), and run:
+7. On the ribbon choose **Data Wrangler** and pick **`runs_bronze`** from the list of Spark DataFrames.
 
-   ```python
-   raw_orders = spark.table("bronze.fact_customer_order").drop("_source_file", "_ingested_at")
-   ```
+   ![The Data Wrangler drop-down listing the notebook's DataFrames, with runs_bronze highlighted.](../docs/images/lab03/lab03-05-data-wrangler-open.png)
 
-8. On the ribbon choose **Home → Data Wrangler** and pick **`raw_orders`**.
+8. Data Wrangler profiles every column. Look at the **Summary** panel on the right: it has found the same problems
+   Silver fixes, with **25 duplicate rows** and **6 missing `ActualUnits`**.
 
-   ![The Data Wrangler drop-down listing the raw_orders DataFrame.](../docs/images/lab03/lab03-05-data-wrangler-open.png)
+   ![Data Wrangler's summary: 3,673 rows, 25 duplicate rows, ActualUnits with 6 missing values.](../docs/images/lab03/lab03-06-data-wrangler-summary.png)
 
-9. Try an operation. For example, select the **`Revenue`** column → **Operations** → **Find and replace** →
-   **Find and replace**, replacing `,` with nothing. Watch the preview, then click **Apply**.
-10. Click **Add code to notebook**: Data Wrangler inserts the equivalent code as a new cell.
+9. In **Operations**, expand **Find and replace** → **Drop duplicate rows**. The preview drops to **3,648 rows**
+   and **0 duplicates**, exactly what the notebook's `dropDuplicates()` produced in Section 1. Click **Apply**.
 
-    ![Data Wrangler with a cleaning step applied and the Add code to notebook button.](../docs/images/lab03/lab03-06-data-wrangler-step.png)
+   ![Drop duplicate rows previewed: 3,648 rows, 0 duplicates, with Apply highlighted.](../docs/images/lab03/lab03-07-data-wrangler-drop-duplicates.png)
 
-> **Why not use Data Wrangler for everything?** It works on a *sample* of your data, which is ideal for
-> exploring and drafting code quickly. The notebook's Silver cells are the repeatable, full-volume version.
+10. Click **Add code to notebook** at the top left. The dialog shows the PySpark it generated. Click **Add**.
+
+    ![The Add code to notebook dialog showing the generated PySpark.](../docs/images/lab03/lab03-08-data-wrangler-add-code.png)
+
+11. The new cell appears **near the top of the notebook, just after the first cell** (not at the end). You
+    don't need to run it: Section 1 already does the same thing. Delete it with the 🗑 on the cell toolbar if you
+    like.
+
+    ![The generated code inserted as a new cell under the notebook's introduction.](../docs/images/lab03/lab03-09-data-wrangler-code-in-notebook.png)
+
+> **Why not use Data Wrangler for everything?** It works on a *sample* (the first 5,000 rows by default, as the
+> banner at the top says), which is ideal for exploring and drafting code quickly. The notebook's Silver cells are
+> the repeatable, full-volume version.
 
 ### Task D (optional): Time travel
 

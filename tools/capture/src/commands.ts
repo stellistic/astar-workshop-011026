@@ -19,6 +19,7 @@ export const commandSchema = z.discriminatedUnion("op", [
     timeout: z.number().int().positive().optional(),
     showCursor: z.boolean().optional(),
     position: z.object({ x: z.number(), y: z.number() }).optional(),
+    modifiers: z.array(z.enum(["Alt", "Control", "ControlOrMeta", "Meta", "Shift"])).optional(),
   }),
   z.object({ op: z.literal("clickXY"), x: z.number(), y: z.number(), double: z.boolean().optional() }),
   z.object({ op: z.literal("hover"), target: t, timeout: z.number().int().positive().optional() }),
