@@ -1,0 +1,22 @@
+ProductKey,ProductCode,ProductName,ProductFamily,Category,UnitPrice,StandardCost
+1,PROD-0001,kPhone 16,kPhone,Smartphones,799,359.55
+2,PROD-0002,kPhone 16 Plus,kPhone,Smartphones,899,404.55
+3,PROD-0003,kPhone 17,kPhone,Smartphones,899,404.55
+4,PROD-0004,kPhone 17 Plus,kPhone,Smartphones,$999.00,449.55
+5,PROD-0005,kPhone 17 Pro,kPhone,Smartphones,999,449.55
+19,PROD-0019,kWatch SE,kWatch,Wearables,249,112.05
+6,PROD-0006,kPhone 17 Pro Max,kPhone,smartphones,1199,539.55
+7,PROD-0007,kPods  ,kPods,Audio,169,76.05
+8,PROD-0008,kPods Pro,kPods,Audio,249,112.05
+9,PROD-0009, kPods Max,kPods,Audio,549,247.05
+10,PROD-0010,kBook Air 13-inch,kBook,Computers,"$1,199.00",539.55
+11,PROD-0011,kBook Air 15-inch  ,kBook,Computers,1299,584.55
+12,PROD-0012,kBook Pro 14-inch,kBook,Computers,"$1,999.00",899.55
+13,PROD-0013,kBook Pro 16-inch,kBook,Computers,2499,1124.55
+14,PROD-0014,kPad Mini,kPad,tablets,349,157.05
+15,PROD-0015,kPad Air 11-inch,kPad,Tablets,$649.00,292.05
+16,PROD-0016,kPad Pro 11-inch,kPad,Tablets,$999.00,449.55
+17,PROD-0017,kPad Pro 12.9-inch,kPad,Tablets,1099,494.55
+18,PROD-0018, kWatch Series 10,kWatch,Wearables,399,179.55
+19,PROD-0019,kWatch SE,kWatch,Wearables,249,112.05
+20,PROD-0020,kWatch Ultra,kWatch,Wearables,799,359.55

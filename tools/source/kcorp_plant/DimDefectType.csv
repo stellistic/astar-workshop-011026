@@ -1,0 +1,13 @@
+DefectTypeKey,DefectCode,DefectName,DefectCategory,SeverityBand
+1,DEF001,Surface Scratch,Physical,Minor
+2,DEF002,Dent,Physical,Minor
+3,DEF003,Color Variance,Physical,Moderate
+4,DEF004,Dimension Out-of-Spec,Physical,Moderate
+5,DEF005,Sensor Misalignment,Sensor,Moderate
+6,DEF006,Connection Failure,Sensor,Critical
+7,DEF007,Memory Error,Software,Critical
+8,DEF008,Logic Error,Software,Moderate
+9,DEF009,Bearing Wear,Mechanical,Critical
+10,DEF010,Housing Crack,Mechanical,Critical
+11,DEF011,Assembly Misalignment,Calibration,Moderate
+12,DEF012,Calibration Error,Calibration,Minor

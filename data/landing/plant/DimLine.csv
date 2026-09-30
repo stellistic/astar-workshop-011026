@@ -1,0 +1,9 @@
+LineKey,PlantKey,LineCode,LineName,ProcessType,CapacityPerHour
+1,1,SG-01-L1,Production Line 1,Assembly,100
+2,1,SG-01-L2,Production Line 2,Testing,110
+3,2,MY-01-L1,Production Line 1,Assembly,100
+4,2,MY-01-L2,Production Line 2,Testing,110
+5,3,IN-01-L1,Production Line 1,Assembly,100
+6,3,IN-01-L2,Production Line 2,Testing,110
+7,4,AU-01-L1,Production Line 1,Assembly,100
+8,4,AU-01-L2,Production Line 2,Testing,110

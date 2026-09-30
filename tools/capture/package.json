@@ -1,0 +1,19 @@
+{
+  "name": "astar-workshop-capture",
+  "private": true,
+  "type": "module",
+  "description": "Maintainer-only: drives Fabric in a real browser to capture workshop screenshots and recordings.",
+  "scripts": {
+    "driver": "tsx src/driver.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "playwright": "1.63.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.2",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

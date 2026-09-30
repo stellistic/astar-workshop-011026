@@ -1,0 +1,4 @@
+ShiftKey,ShiftName,StartTime,EndTime,IsNightShift
+1,Day,06:00:00,14:00:00,0
+2,Evening,14:00:00,22:00:00,0
+3,Night,22:00:00,06:00:00,1
