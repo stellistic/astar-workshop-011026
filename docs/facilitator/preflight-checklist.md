@@ -11,15 +11,22 @@ golden workspace ran on an **F2** with a single user.
 |---|---|---|
 | **Users can create Fabric items** | Every lab | Enabled for the workshop security group |
 | **Create workspaces** | Lab 0, if participants create their own | Enabled for the workshop group (or pre-create the workspaces) |
-| **Users can use Copilot and other features powered by Azure OpenAI** | **Lab 6 (AI Functions)**, Lab 7 Copilot, Lab ★ | Enabled for the workshop group |
+| **Users can use Copilot and other features powered by Azure OpenAI** | **Lab 6 (AI Functions)**, Lab 7 Copilot, Labs ★ (report, data agent) | Enabled for the workshop group |
 | **Data sent to Azure OpenAI can be processed outside your capacity's geographic region, compliance boundary, or national cloud instance** | Same as above, **for capacities outside the US/EU** (e.g. Southeast Asia) | Enabled (tenant or capacity level) |
+| **Data sent to Azure OpenAI can be stored outside your capacity's geographic region, compliance boundary, or national cloud instance** | **Lab 9 (data agent)** keeps chat history; **required for capacities outside the US/EU** | Enabled (tenant or capacity level) |
+| **Capacities can be designated as Fabric Copilot capacities** | Copilot and data agent billing to a chosen capacity | Enabled if you use a Copilot capacity |
 | **Users can use Copilot, AI Agents, and other AI experiences powered by OpenAI as a Microsoft subprocessor** | Newer Copilot models (if shown in your tenant) | Enabled if your policy allows |
 
 > **Without the Azure OpenAI settings**, Lab 6 fails at step 2 with an AI Functions authorisation error. The lab has
 > a catch-up path (`USE_CATCHUP = True`), so the workshop still runs, but the best moment of the afternoon is
 > lost. Test it (section 5).
 
+> **Lab 9 (data agent)** needs the *processed* **and** *stored* outside-region settings when the capacity is in
+> Southeast Asia. Tenant settings can take **up to an hour** to apply. There's no longer a separate "data agent"
+> switch; the Azure OpenAI settings above cover it.
+
 References: [Copilot tenant settings](https://learn.microsoft.com/fabric/admin/service-admin-portal-copilot) ·
+[Data agent tenant settings](https://learn.microsoft.com/fabric/data-science/data-agent-tenant-settings) ·
 [AI Functions prerequisites](https://learn.microsoft.com/fabric/data-science/ai-functions/overview#prerequisites)
 
 ## 2 · Capacity sizing: Spark concurrency is the constraint
@@ -64,7 +71,7 @@ workspace has a custom environment pinned to something older than 1.3, AI Functi
 
 - **Licences.** A **Fabric (Free)** licence is enough for Labs 0–6 (Lakehouse, notebooks, Dataflow Gen2, AI
   Functions) in a workspace on an F-SKU. **Lab 7 and Lab ★ create a semantic model and a report, which are Power
-  BI items, so each participant needs Power BI Pro or Premium Per User** (Microsoft 365 E5 includes Pro).
+  BI items (Lab 9's data agent needs no extra licence, but builds on the Lab 7 model), so each participant needs Power BI Pro or Premium Per User** (Microsoft 365 E5 includes Pro).
   A free user can only create them in *My workspace*. Check this early: it's the most common surprise.
   [Reference](https://learn.microsoft.com/power-bi/consumer/end-user-features)
 - Decide: **participants create their own workspace** (Lab 0, needs *Create workspaces*) **or** you pre-create

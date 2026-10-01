@@ -36,6 +36,7 @@ flowchart LR
     AI["AI Functions<br/>ai.extract"]
     SM["Semantic model<br/>sm_kcorp_plant · Direct Lake"]
     RPT["Report<br/>built by Copilot ★"]
+    AGT["Data agent<br/>agent_kcorp_plant ★"]
   end
   CSV -->|upload| FILES
   PDF -->|upload| FILES
@@ -46,6 +47,7 @@ flowchart LR
   FILES --> AI --> BRZ
   SLV --> NB --> GLD
   GLD --> SM --> RPT
+  SM --> AGT
 ```
 
 ---
@@ -63,6 +65,7 @@ flowchart LR
 | 6 | [Unstructured data: PDFs to rows with AI](lab06-unstructured-ai/README.md) | Notebook · AI Functions | 30 min |
 | 7 | [Semantic model](lab07-semantic-model/README.md) | Direct Lake · Copilot | 25 min |
 | ★ | [Stretch: let Copilot build the report](lab08-stretch-report/README.md) | Power BI · Copilot | optional |
+| ★ | [Stretch: talk to your data with a data agent](lab09-data-agent/README.md) | Data agent · Prep data for AI | optional |
 
 Each lab ends with a **✅ checkpoint**, and each notebook ends with a **verify** cell that prints ✅ or ❌ against
 the known-correct row counts. The data is fixed, so everyone should see the same numbers (see
@@ -86,7 +89,7 @@ the known-correct row counts. The data is fixed, so everyone should see the same
 | 15:45 | **Lab 5** Gold |
 | 16:05 | **Lab 6** Unstructured data with AI |
 | 16:35 | **Lab 7** Semantic model |
-| 16:55 | Wrap-up · ★ stretch lab to take home |
+| 16:55 | Wrap-up · ★ stretch labs (report, data agent) to take home |
 
 ### Get the kit
 
@@ -113,6 +116,7 @@ Use these names exactly; the notebooks and guides refer to them.
 | Schemas | `bronze`, `silver`, `gold` |
 | Dataflow Gen2 | `df_silver_dimensions` |
 | Semantic model | `sm_kcorp_plant` |
+| Data agent (Lab 9 ★) | `agent_kcorp_plant` |
 
 > **About the screenshots:** they were taken in a demo tenant, so workspace names, user names and the colour of
 > your avatar will differ. Fabric's UI also changes often; if a button has moved, look for the same label nearby,

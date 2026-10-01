@@ -193,4 +193,5 @@ flowchart LR
 | Scrap Rate % for MY-01 | **3.79%** |
 
 ### Next up
-**[★ Stretch · Let Copilot build the report](../lab08-stretch-report/README.md)**, or you're done. 🎉
+**[★ Stretch · Let Copilot build the report](../lab08-stretch-report/README.md)** or
+**[★ Stretch · Talk to your data with a data agent](../lab09-data-agent/README.md)**, or you're done. 🎉
