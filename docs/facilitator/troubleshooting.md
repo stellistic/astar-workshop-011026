@@ -109,3 +109,26 @@ and flags reversed relationships.
 **"Creating a semantic model requires a Power BI Pro licence".**
 See the [pre-flight licence note](preflight-checklist.md#4--participant-accounts-and-workspaces). The participant
 can follow along on a neighbour's screen, or build the model in *My workspace*.
+
+## Lab 9 · Data agent
+
+**No *Data agent* tile in New item.**
+The Copilot / Azure OpenAI tenant settings are off, or the workspace isn't on a paid F2+ capacity. For capacities
+outside the US/EU, both *processed* and *stored outside your capacity's geographic region* must be on (see the
+[pre-flight](preflight-checklist.md)). Changes can take up to an hour.
+
+**The agent's numbers don't match the Lab 7 checkpoint.**
+Click **N steps completed** and read the rewritten question and the **DAX**. In the golden run the agent added
+"latest full year" by itself, and once read *actual units* as ordered units. Fix it in the model: **Prep data for
+AI → Add AI instructions** (see Lab 9, Task D), then **Clear chat** and ask again.
+
+**The agent ignores the instructions I typed in *Agent instructions*.**
+That's expected for semantic models: the DAX writer reads only the model's metadata and **Prep data for AI**.
+Put business rules there.
+
+**A plant with no name tops a ranking at 100%.**
+That's the model's blank row (`1 − blank = 1`). Use a measure that returns blank when there's no data, like Lab 9's
+`Yield %`.
+
+**The *Save* icon at the top left opens "Save data agent as".**
+That's *Save as* (it makes a copy). Draft changes save automatically; click **Cancel**.

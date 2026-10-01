@@ -1,0 +1,16 @@
+K-Corp is an electronics manufacturer with four plants: SG-01 (Singapore), MY-01 (Malaysia), IN-01 (India) and AU-01 (Australia). Users may name a plant by its code or its country.
+
+Time period
+- The data runs from January 2024 to June 2026. 2026 is a partial year.
+- If the user does not name a period, use ALL available data. Never filter to the latest year or the latest full year on your own.
+- For trends or "over time", group by dim_date[Year] or dim_date[YearMonth].
+
+Business terms
+- Yield = [Yield %] (1 - [Scrap Rate %]). Best yield = highest [Yield %]. Only rank the four named plants; ignore rows with no PlantCode.
+- Scrap is material lost in production (fact_production_run). Defects are found by quality inspection (fact_quality_inspection). Use [Scrap Rate %] for scrap and [Defect Rate %] for defects; never mix them.
+- Energy intensity or energy per unit = [Energy per Unit kWh]. Lower is better.
+- On-time delivery = 1 - [Late Order %].
+- Attainment = [Production Attainment %], actual units against planned units.
+- Units, output or volume = units produced: [Actual Units] (planned: [Planned Units]). Use the order tables only when the user says orders, shipped or customers.
+
+Always use the model's measures instead of summing columns. Show percentages with two decimals.

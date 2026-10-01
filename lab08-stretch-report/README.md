@@ -66,4 +66,5 @@ sensible visuals from a plain-English description.
 You've taken raw CSVs and scanned PDFs all the way to a Copilot-built report, in one Lakehouse, with every number
 checked. 🎉
 
-**[← Back to the workshop home](../README.md)**
+**Next:** [★ Lab 9 · Talk to your data with a data agent](../lab09-data-agent/README.md), or
+**[← back to the workshop home](../README.md)**

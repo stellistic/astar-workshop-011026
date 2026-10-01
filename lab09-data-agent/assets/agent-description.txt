@@ -1,0 +1,1 @@
+Answers questions about K-Corp's four plants (SG-01, MY-01, IN-01, AU-01) from January 2024 to June 2026: production volume, scrap and yield, quality defects, maintenance, customer orders and late deliveries, and electricity use per unit produced. Uses the sm_kcorp_plant semantic model.
